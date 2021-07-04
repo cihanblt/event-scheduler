@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <style type="text/css">
+        .loading-icon {
+            font-size: 5rem;
+            color: var(--primary-color);
+        }
+    </style>
+</h:head>
+<body>
+<div class="card text-secondary">
+    <p:ajaxStatus styleClass="p-d-block p-mb-4">
+        <f:facet name="start">
+            <i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+        </f:facet>
+    </p:ajaxStatus>
+
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false"
+              showHeader="false">
+        <div class="p-text-center">
+            <i class="pi pi-spinner loading-icon" aria-hidden="true"></i>
+        </div>
+    </p:dialog>
+</div>
+<h:form>
+    <p:growl id="growl" showDetail="true"/>
+    <p:panel>
+        <f:facet name="header">
+            New Event
+            <p:commandButton action="#{eventBean.refresh()}"
+                             icon="pi pi-refresh" update="@form" process="@this"/>
+        </f:facet>
+        <h:panelGrid id="add-event-parent" columns="3">
+
+            <p:outputLabel for="event-desc" value="Event Description"/>
+            <p:inputText id="event-desc" value="#{eventBean.event.eventName}"
+                         required="true"/>
+            <p:message for="event-desc"/>
+
+            <p:outputLabel for="event-date" value="Event Date"/>
+            <p:datePicker id="event-date" value="#{eventBean.event.eventDate}"
+                          showTime="false" required="true"/>
+            <p:message for="event-date"/>
+
+            <p:outputLabel for="event-type" value="Event Type"/>
+            <p:selectOneMenu id="event-type" value="#{eventBean.event.eventTypeEnum}">
+                <f:selectItems value="#{eventBean.eventTypeEnums}" var="et" itemValue="#{et}" itemLabel="#{et.label}"/>
+                <p:ajax event="change" process="@this" listener="#{eventBean.changeEventType}" />
+            </p:selectOneMenu>
+            <p:message for="event-type"/>
+
+            <p:outputLabel for="event-duration" value="Event Duration"/>
+            <p:inputText id="event-duration" value="#{eventBean.event.eventDuration}"
+                         required="true"/>
+            <p:message for="event-duration"/>
+
+            <p:outputLabel for="contact-action" value="Contact Action"/>
+            <p:selectBooleanCheckbox id="contact-action" value="#{eventBean.event.contactAction}"/>
+            <p:message for="contact-action"/>
+
+            <p:outputLabel/>
+            <p:commandButton value="Save" action="#{eventBean.acrionSaveEvent()}"
+                             update="@form" process="add-event-parent"/>
+
+        </h:panelGrid>
+    </p:panel>
+
+    <br/>
+
+    <p:tabView>
+        <p:tab title="All Events">
+            <p:panel>
+                <f:facet name="header">
+                    <p:commandButton action="#{eventBean.actionFetchAll()}"
+                                     icon="pi pi-refresh" update="@form" process="@this"/>
+                </f:facet>
+                <p:dataTable var="evnt" value="#{eventBean.eventList}"
+                             rows="10" paginator="true">
+
+                    <p:column headerText="Event Date">
+                        <h:outputText value="#{evnt.eventDate}"/>
+                    </p:column>
+
+                    <p:column headerText="Event Duration">
+                        <h:outputText value="#{evnt.eventDuration}"/>
+                    </p:column>
+
+                    <p:column headerText="Event Description">
+                        <h:outputText value="#{evnt.eventName}"/>
+                    </p:column>
+
+                    <p:column headerText="Event Type">
+                        <h:outputText value="#{evnt.eventTypeEnum.label}"/>
+                    </p:column>
+
+                    <p:column headerText="Event Order">
+                        <h:outputText value="#{evnt.eventOrder}"/>
+                    </p:column>
+
+                    <p:column headerText="Contact Action">
+                        <h:outputText value="#{evnt.contactAction}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </p:tab>
+
+        <p:tab title="Events By Date">
+            <p:panel>
+                <f:facet name="header">
+                    <p:outputLabel for="event-date-pic" value="Selected Date"/>
+                    <p:datePicker id="event-date-pic" value="#{eventBean.selectedDate}"
+                                  showTime="false" required="true">
+                        <p:ajax event="dateSelect" process="@this" update="eventListByDate" listener="#{eventBean.actionFetchEventsByDate}"/>
+                    </p:datePicker>
+                </f:facet>
+                <p:dataTable id="eventListByDate" var="evnt" value="#{eventBean.eventList}"
+                             rows="10" paginator="true">
+
+                    <p:column headerText="Event Date">
+                        <h:outputText value="#{evnt.eventDate}"/>
+                    </p:column>
+
+                    <p:column headerText="Event Duration">
+                        <h:outputText value="#{evnt.eventDuration}"/>
+                    </p:column>
+
+                    <p:column headerText="Event Description">
+                        <h:outputText value="#{evnt.eventName}"/>
+                    </p:column>
+
+                    <p:column headerText="Event Type">
+                        <h:outputText value="#{evnt.eventTypeEnum.label}"/>
+                    </p:column>
+
+                    <p:column headerText="Event Order">
+                        <h:outputText value="#{evnt.eventOrder}"/>
+                    </p:column>
+
+                    <p:column headerText="Contact Action">
+                        <h:outputText value="#{evnt.contactAction}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </p:tab>
+
+        <p:tab title="Manipulated Events">
+            <p:panel>
+                <f:facet name="header">
+                    <p:datePicker id="event-date-man" value="#{eventBean.selectedDate}"
+                                  showTime="false" required="true">
+                        <p:ajax event="dateSelect" process="@this" update="manipulatedEventListByDate" listener="#{eventBean.actionFetchManipulatedEventsByDate}"/>
+                    </p:datePicker>
+                </f:facet>
+                <p:dataTable id="manipulatedEventListByDate" var="mevnt" value="#{eventBean.manipulatedEventList}"
+                             rows="10" paginator="true">
+
+                    <p:column headerText="Event Time">
+                        <h:outputText value="#{mevnt.eventStartTimeAsString}" />
+                    </p:column>
+
+                    <p:column headerText="Event Description">
+                        <h:outputText value="#{mevnt.track}"/>
+                    </p:column>
+
+                    <p:column headerText="Event Duration">
+                        <h:outputText value="#{mevnt.eventDuration}"/>
+                    </p:column>
+
+                </p:dataTable>
+            </p:panel>
+        </p:tab>
+    </p:tabView>
+</h:form>
+</body>
+</html>
