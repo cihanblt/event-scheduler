@@ -1,5 +1,6 @@
 package com.n11.eventscheduler.services;
 
+import com.n11.eventscheduler.constans.EventConstants;
 import com.n11.eventscheduler.dto.ManipulatedEvent;
 import com.n11.eventscheduler.enums.ResultEnum;
 import com.n11.eventscheduler.models.Event;
@@ -105,7 +106,7 @@ public class EventService {
                     LocalTime afterStartTime = null;
                     if (!manipulatedEventList.isEmpty()) {
                         lastManipulatedEvent = manipulatedEventList.get(manipulatedEventList.size() - 1);
-                        if (finalDuration < 180) {
+                        if (finalDuration < EventConstants.HALY_DAY_TIME_LIMIT) {
                             addEventInManipulatedList(manipulatedEventList, event, dateTimeFormatter, lastManipulatedEvent);
                         } else if (lastManipulatedEvent.getEventStartTime().plusMinutes(event.getEventDuration()).isBefore(LocalTime.of(12, 0))
                                 && lastManipulatedEvent.getEventFinishTime().plusMinutes(event.getEventDuration()).isAfter(LocalTime.of(12, 0))) {

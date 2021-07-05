@@ -54,13 +54,13 @@
             <p:outputLabel for="event-type" value="Event Type"/>
             <p:selectOneMenu id="event-type" value="#{eventBean.event.eventTypeEnum}">
                 <f:selectItems value="#{eventBean.eventTypeEnums}" var="et" itemValue="#{et}" itemLabel="#{et.label}"/>
-                <p:ajax event="change" process="@this" listener="#{eventBean.changeEventType}" />
+                <p:ajax event="change" process="@this" update="event-duration" listener="#{eventBean.changeEventType}" />
             </p:selectOneMenu>
             <p:message for="event-type"/>
 
             <p:outputLabel for="event-duration" value="Event Duration"/>
             <p:inputText id="event-duration" value="#{eventBean.event.eventDuration}"
-                         required="true"/>
+                         required="true" disabled="#{eventBean.durationDisable}"/>
             <p:message for="event-duration"/>
 
             <p:outputLabel for="contact-action" value="Contact Action"/>

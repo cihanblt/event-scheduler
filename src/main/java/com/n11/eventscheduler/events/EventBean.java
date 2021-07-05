@@ -1,5 +1,6 @@
 package com.n11.eventscheduler.events;
 
+import com.n11.eventscheduler.constans.EventConstants;
 import com.n11.eventscheduler.dto.ManipulatedEvent;
 import com.n11.eventscheduler.enums.EventTypeEnum;
 import com.n11.eventscheduler.enums.ResultEnum;
@@ -85,7 +86,13 @@ public class EventBean implements Serializable {
     }
 
     public void changeEventType(){
-
+        if(event.getEventTypeEnum().equals(EventTypeEnum.LIGHTNING)){
+            event.setEventDuration(EventConstants.LIGTNING_EVENT_DURATION);
+            isDurationDisable = Boolean.TRUE;
+        }else {
+            event.setEventDuration(null);
+            isDurationDisable = Boolean.FALSE;
+        }
     }
 
     public void refresh(){
