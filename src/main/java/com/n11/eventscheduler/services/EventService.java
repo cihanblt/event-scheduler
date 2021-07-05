@@ -37,7 +37,7 @@ public class EventService {
         setOrderInEvent(event);
         ResultObject r = adjustEvents(event.getEventDate());
         List<ManipulatedEvent> manipulatedEventList = (List<ManipulatedEvent>) r.fetchAndRemove(ResultEnum.SUCCESS);
-        if (!manipulatedEventList.isEmpty()) {
+        if (manipulatedEventList != null && !manipulatedEventList.isEmpty()) {
             if (!event.getContactAction()) {
                 List<ManipulatedEvent> manipulatedEvents = manipulatedEventList.stream().filter(e -> e.getContactAction()!=null && !e.getContactAction()).collect(Collectors.toList());
                 if(manipulatedEvents != null && !manipulatedEvents.isEmpty()) {
