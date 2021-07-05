@@ -68,7 +68,7 @@
             <p:message for="contact-action"/>
 
             <p:outputLabel/>
-            <p:commandButton value="Save" action="#{eventBean.acrionSaveEvent()}"
+            <p:commandButton value="Save" actionListener="#{eventBean.acrionSaveEvent()}"
                              update="@form" process="add-event-parent"/>
 
         </h:panelGrid>
@@ -157,6 +157,7 @@
         <p:tab title="Manipulated Events">
             <p:panel>
                 <f:facet name="header">
+                    <p:outputLabel for="event-date-man" value="Selected Date"/>
                     <p:datePicker id="event-date-man" value="#{eventBean.selectedDate}"
                                   showTime="false" required="true">
                         <p:ajax event="dateSelect" process="@this" update="manipulatedEventListByDate" listener="#{eventBean.actionFetchManipulatedEventsByDate}"/>

@@ -39,16 +39,32 @@ public class EventService {
         List<ManipulatedEvent> manipulatedEventList = (List<ManipulatedEvent>) r.fetchAndRemove(ResultEnum.SUCCESS);
         if (!manipulatedEventList.isEmpty()) {
             if (!event.getContactAction()) {
-                List<ManipulatedEvent> manipulatedEvents = manipulatedEventList.stream().filter(e -> !e.getContactAction()).collect(Collectors.toList());
-                ManipulatedEvent lastManipulatedEvent = manipulatedEvents.get(manipulatedEvents.size() - 1);
-                if (lastManipulatedEvent.getEventFinishTime().plusMinutes(event.getEventDuration()).isAfter(LocalTime.of(16, 0))) {
-                    resultObject.fillResult(ResultEnum.WARNING, "Daily Total Time Exceeded!");
+                List<ManipulatedEvent> manipulatedEvents = manipulatedEventList.stream().filter(e -> e.getContactAction()!=null && !e.getContactAction()).collect(Collectors.toList());
+                if(manipulatedEvents != null && !manipulatedEvents.isEmpty()) {
+                    ManipulatedEvent lastManipulatedEvent = manipulatedEvents.get(manipulatedEvents.size() - 1);
+                    if (lastManipulatedEvent.getEventFinishTime().plusMinutes(event.getEventDuration()).isAfter(LocalTime.of(16, 0))) {
+                        resultObject.fillResult(ResultEnum.WARNING, "Daily Total Time Exceeded!");
+                    }else{
+                        Event e = eventRepository.save(event);
+                        resultObject.fillResult(ResultEnum.SUCCESS, e);
+                    }
+                }else{
+                    Event e = eventRepository.save(event);
+                    resultObject.fillResult(ResultEnum.SUCCESS, e);
                 }
-            }else{
-                List<ManipulatedEvent> manipulatedEvents = manipulatedEventList.stream().filter(e -> e.getContactAction()).collect(Collectors.toList());
+            } else {
+                List<ManipulatedEvent> manipulatedEvents = manipulatedEventList.stream().filter(e -> e.getContactAction()!=null && e.getContactAction()).collect(Collectors.toList());
+                if(manipulatedEvents != null && !manipulatedEvents.isEmpty()) {
                 ManipulatedEvent lastManipulatedEvent = manipulatedEvents.get(manipulatedEvents.size() - 1);
-                if (lastManipulatedEvent.getEventFinishTime().plusMinutes(event.getEventDuration()).isAfter(LocalTime.of(17, 0))) {
-                    resultObject.fillResult(ResultEnum.WARNING, "Daily Total Time Exceeded!");
+                    if (lastManipulatedEvent.getEventFinishTime().plusMinutes(event.getEventDuration()).isAfter(LocalTime.of(17, 0))) {
+                        resultObject.fillResult(ResultEnum.WARNING, "Daily Total Time Exceeded!");
+                    }else{
+                        Event e = eventRepository.save(event);
+                        resultObject.fillResult(ResultEnum.SUCCESS, e);
+                    }
+                }else{
+                    Event e = eventRepository.save(event);
+                    resultObject.fillResult(ResultEnum.SUCCESS, e);
                 }
             }
         } else {

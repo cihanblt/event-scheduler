@@ -25,7 +25,7 @@ public class Event {
 
     private EventTypeEnum eventTypeEnum;
 
-    private Boolean isContactAction;
+    private Boolean isContactAction = Boolean.FALSE;
 
     private Short eventOrder;
 
